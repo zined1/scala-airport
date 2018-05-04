@@ -12,9 +12,11 @@ object main
 
   def parseLines(l : List[String]): List[List[String]] = l.map{x => csvParserLine(x)}.toList
 
+  def getColl(s : String) = MongoClient("localhost", 27017)("Airport")(s)
+
   def main(args: Array[String]): Unit = {
-    MongoClient("localhost", 27017)("Airport")("countries").insert(MongoDBObject("hello" -> "world"))
-    println(MongoClient("localhost", 27017)("Airport")("countries").count())
+    parseLines(scala.io.Source.fromFile("countries.csv")("UTF-8").mkString.split("\n").toList).foreach { l => 
+    getColl("countries").insert(MongoDBObject("id" -> l(0), "code" -> l(1), "name" -> l(2), "continent" -> l(3), "wikipedia_link" -> l(4), "keywords" -> l(5))) }
   }
 }
 //def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
