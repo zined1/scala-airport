@@ -1,3 +1,5 @@
+import com.mongodb.casbah.Imports._
+
 object main
 {
   def csvParserLine(s: String, res: Vector[String] = Vector(), tmp: String = "", c: Int = 0, quote: Boolean = false): List[String] = (s,quote) match {
@@ -11,7 +13,13 @@ object main
   def parseLines(l : List[String]): List[List[String]] = l.map{x => csvParserLine(x)}.toList
 
   def main(args: Array[String]): Unit = {
-    println("Hello World!")
+    val mongoClient = MongoClient("localhost", 27017)
+    val db = mongoClient("test")
+    val coll = db("test")
+    val a = MongoDBObject("hello" -> "world")
+    coll.insert( a )
+    println(coll.count())
+//    println("Hello World!")
   }
 }
 //def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
