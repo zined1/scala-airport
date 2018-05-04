@@ -13,13 +13,8 @@ object main
   def parseLines(l : List[String]): List[List[String]] = l.map{x => csvParserLine(x)}.toList
 
   def main(args: Array[String]): Unit = {
-    val mongoClient = MongoClient("localhost", 27017)
-    val db = mongoClient("test")
-    val coll = db("test")
-    val a = MongoDBObject("hello" -> "world")
-    coll.insert( a )
-    println(coll.count())
-//    println("Hello World!")
+    MongoClient("localhost", 27017)("Airport")("countries").insert(MongoDBObject("hello" -> "world"))
+    println(MongoClient("localhost", 27017)("Airport")("countries").count())
   }
 }
 //def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
