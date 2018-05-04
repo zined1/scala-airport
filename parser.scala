@@ -1,5 +1,3 @@
-import anorm._
-
 object main
 {
   def csvParserLine(s: String, res: Vector[String] = Vector(), tmp: String = "", c: Int = 0, quote: Boolean = false): List[String] = (s,quote) match {
@@ -10,13 +8,10 @@ object main
   case _ => csvParserLine(s, res, tmp + s(c), c + 1, quote) // Add the char to the tmp accumulator and next char
   }
 
-  def parseLines(l : List[String]): List[List[String]] = l.map{ x => csvParserLine(x)}.toList
+  def parseLines(l : List[String]): List[List[String]] = l.map{x => csvParserLine(x)}.toList
 
   def main(args: Array[String]): Unit = {
-    parseLines(scala.io.Source.fromFile("countries.csv").mkString.split("\n").toList)
-    database.withConnection { implicit c =>
-      val result: Boolean = SQL("Select 1").execute()
-    }
+    println("Hello World!")
   }
 }
 //def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
