@@ -18,35 +18,53 @@ object main
   def exists(l : List[String], i : Int) =
     if (i < l.length) Some(l(i)) else None
 
-  def main(args: Array[String]): Unit = {
-    val countriesCollection = getColl("countries")
+  def addCountriesCollection(c: MongoCollection): Unit = {
     parseLines(scala.io.Source.fromFile("countries.csv")("UTF-8").mkString.split("\n").toList).foreach { l =>
-      countriesCollection.insert(MongoDBObject("id" -> exists(l, 0),
+      c.insert(MongoDBObject("id" -> exists(l, 0),
         "code" -> exists(l, 1), "name" -> exists(l, 2), "continent" -> exists(l, 3),
         "wikipedia_link" -> exists(l, 4), "keywords" -> exists(l, 5)))
     }
+  }
 
-    val runwaysCollection = getColl("runways")
+  def addRunwaysCollection(c: MongoCollection): Unit = {
     parseLines(scala.io.Source.fromFile("runways.csv")("UTF-8").mkString.split("\n").toList).foreach { l =>
-      runwaysCollection.insert(MongoDBObject("id" -> exists(l, 0), "airport_ref" -> exists(l, 1), "airport_ident" -> exists(l, 2),
+      c.insert(MongoDBObject("id" -> exists(l, 0), "airport_ref" -> exists(l, 1), "airport_ident" -> exists(l, 2),
         "length_ft" -> exists(l, 3), "width_ft" -> exists(l, 4), "surface" -> exists(l, 5), "lighted" -> exists(l, 6),
         "closed" -> exists(l, 7), "le_ident" -> exists(l, 8), "le_latitude_deg" -> exists(l, 9),"le_longitude_deg" -> exists(l, 10),
         "le_elevation_ft" -> exists(l, 11),"le_heading_degT" -> exists(l, 12),"le_displaced_threshold_ft" -> exists(l, 13),
         "he_ident" -> exists(l, 14),"he_latitude_deg" -> exists(l, 15),"he_longitude_deg" -> exists(l, 16),"he_elevation_ft" -> exists(l, 17),
         "he_heading_degT" -> exists(l, 18), "he_displaced_threshold_ft" -> exists(l, 19)))
     }
-    val airportsColletion = getColl("airports")
+  }
+
+  def addAirportsCollection(c: MongoCollection): Unit = {
     parseLines(scala.io.Source.fromFile("airports.csv")("UTF-8").mkString.split("\n").toList).foreach { l =>
-      airportsColletion.insert(MongoDBObject("id" -> exists(l, 0), "ident" -> exists(l, 1), "type" -> exists(l, 2),
+      c.insert(MongoDBObject("id" -> exists(l, 0), "ident" -> exists(l, 1), "type" -> exists(l, 2),
         "name" -> exists(l, 3), "latitude_deg" -> exists(l, 4), "longitude_deg" -> exists(l, 5), "elevation_ft" -> exists(l, 6),
         "continent" -> exists(l, 7), "iso_country" -> exists(l, 8), "iso_region" -> exists(l, 9),"municipality" -> exists(l, 10),
         "scheduled_service" -> exists(l, 11),"gps_code" -> exists(l, 12),"iata_code" -> exists(l, 13),
         "local_code" -> exists(l, 14),"home_link" -> exists(l, 15),"wikipedia_link" -> exists(l, 16),"keywords" -> exists(l, 17)))
     }
   }
+
+  def main(args: Array[String]): Unit = {
+    val countriesCollection = getColl("countries")
+    addCountriesCollection(countriesCollection)
+
+    val runwaysCollection = getColl("runways")
+    addRunwaysCollection(runwaysCollection)
+
+    val airportsCollection = getColl("airports")
+    addAirportsCollection(airportsCollection)
+
+    countriesCollection.find(MongoDBObject("code" -> "\"ZZ\"")).foreach{
+      x => println(x)
+        println()
+    }
+  }
 }
-//def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
-//  case ("Query") => println("query")
-//  case ("Reports") => println("report")
-//  case _ => println("Unknown Option")
-//}
+  //def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
+  //  case ("Query") => println("query")
+  //  case ("Reports") => println("report")
+  //  case _ => println("Unknown Option")
+  //}
