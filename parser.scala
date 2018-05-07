@@ -1,5 +1,4 @@
 import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.MongoConnection
 
 object main
 {
@@ -12,8 +11,6 @@ object main
   }
 
   def parseLines(l : List[String]): List[List[String]] = l.map{x => csvParserLine(x)}.toList
-
-  def getColl(s : String): MongoCollection = MongoClient("localhost", 27017)("Airport")(s)
 
   def exists(l : List[String], i : Int) = if (i < l.length) Some(l(i).replaceAll("\"","")) else None
 
@@ -49,22 +46,58 @@ object main
       }
   }
 
+  def addRunwaysAirportsCollection(c: MongoCollection, airports: List[List[String]]): Unit = {
+    if (c.count() == 0)
+      parseLines(scala.io.Source.fromFile("runways.csv")("UTF-8").mkString.split("\n").toList).foreach { l =>
+        val t = airports.filter{x => x(0) == l(1)}.flatten
+        c.insert(MongoDBObject("id" -> exists(l, 0), "airport_ref" -> exists(l, 1), "airport_ident" -> exists(l, 2),
+          "length_ft" -> exists(l, 3), "width_ft" -> exists(l, 4), "surface" -> exists(l, 5), "lighted" -> exists(l, 6),
+          "closed" -> exists(l, 7), "le_ident" -> exists(l, 8), "le_latitude_deg" -> exists(l, 9),"le_longitude_deg" -> exists(l, 10),
+          "le_elevation_ft" -> exists(l, 11),"le_heading_degT" -> exists(l, 12),"le_displaced_threshold_ft" -> exists(l, 13),
+          "he_ident" -> exists(l, 14),"he_latitude_deg" -> exists(l, 15),"he_longitude_deg" -> exists(l, 16),"he_elevation_ft" -> exists(l, 17),
+          "he_heading_degT" -> exists(l, 18), "he_displaced_threshold_ft" -> exists(l, 19), "ident" -> exists(t, 1),
+          "type" -> exists(t, 2), "name" -> exists(t, 3), "iso_country" -> exists(t, 8)))
+      }
+  }
   def main(args: Array[String]): Unit = {
-    val countriesCollection = getColl("countries")
+
+    val mongoClient = MongoClient("localhost", 27017)("Airport")
+    val countriesCollection = mongoClient("countries")
     addCountriesCollection(countriesCollection)
 
-    val runwaysCollection = getColl("runways")
+    val runwaysCollection = mongoClient("runways")
+    runwaysCollection.createIndex("airport_ref")
     addRunwaysCollection(runwaysCollection)
 
-    val airportsCollection = getColl("airports")
+    val airportsCollection = mongoClient("airports")
+    airportsCollection.createIndex("id")
     addAirportsCollection(airportsCollection)
-    val input = "FR"
-    val list = countriesCollection.filter{ x => (x("name")) == input }
-    val code = if (!list.isEmpty) list.last("code") else (input)
-    val interstingCountries = countriesCollection.filter{x => x("code") == code}
-    interstingCountries.foreach{
-      x => airportsCollection.filter{a => a("iso_country") == x("code")}.foreach{ f => println(f("name")) }
-    }
+
+    //val t = parseLines(scala.io.Source.fromFile("airports.csv")("UTF-8").mkString.split("\n").toList)
+    //val runwaysAirportsCollection = mongoClient("runways_airports")
+    //runwaysAirportsCollection.createIndex("airport_ref")
+    //addRunwaysAirportsCollection(runwaysAirportsCollection, t)
+
+    //airportsCollection.foreach{x => println(x("name")+ ":" + runwaysAirportsCollection.find(MongoDBObject("iso_country" -> "FR", "airport_ref" -> x("id"))).count)}
+  /*  val input = "FR"
+    val list = countriesCollection.find(MongoDBObject("name" -> input)).toList
+    val code = if (!list.isEmpty) list(0)("code") else (input)
+    val interestingAirports = airportsCollection.find(MongoDBObject("iso_country" -> code))
+*/
+    val aggregationOptions = AggregationOptions(AggregationOptions.CURSOR)
+    val results = airportsCollection.aggregate(
+    List(
+     MongoDBObject("$match" -> MongoDBObject("iso_country" -> "US")),
+     MongoDBObject("$lookup" ->
+     MongoDBObject("from" -> "runways", "localField" -> "id", "foreignField" -> "airport_ref", "as" -> "runways")),
+     MongoDBObject("$unwind" -> "$runways")),
+     aggregationOptions)
+
+    println(results.foreach{x => println(x)})
+    //airportsCollection.foreach{x => println(x("name") + ":" + results.toList.filter{t => t("airport_ref") == x("id")}.size)}
+    //interestingAirports.foreach { a => println(a("name"))
+    //println(runwaysCollection.find(MongoDBObject("airport_ref" -> a("id"))).size)
+    //}
   }
 }
 //def test(t: String = ""): Any = scala.io.StdIn.readLine() match {
