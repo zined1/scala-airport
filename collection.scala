@@ -6,7 +6,8 @@ package collection
   object insert_collection {
     // Add countries into a collection
     def insertCountriesCollection(collection: MongoCollection, file: String): Unit = {
-      if (collection.count() == 0)
+      if (collection.count() == 0) {
+        println("Insert Countries collection...")
         parser_countries.parseLinesCountries(parser_csv.fileToList(file)).drop(1).foreach { country =>
           collection.insert(MongoDBObject(
             "id" -> check_collection.exists(country.id),
@@ -16,11 +17,13 @@ package collection
             "wikipedia_link" -> check_collection.exists(country.wikipedia_link),
             "keywords" -> check_collection.exists(country.keywords)))
         }
+      }
     }
 
     // Add runways into a collection
     def insertRunwaysCollection(collection: MongoCollection, file: String): Unit = {
-      if (collection.count() == 0)
+      if (collection.count() == 0) {
+        println("Insert Runways collection...")
         parser_runways.parseLinesRunways(parser_csv.fileToList(file)).drop(1).foreach { runway =>
           collection.insert(MongoDBObject(
             "id" -> check_collection.exists(runway.id),
@@ -44,11 +47,13 @@ package collection
             "he_heading_degT" -> check_collection.exists(runway.he_heading_degT),
             "he_displaced_threshold_ft" -> check_collection.exists(runway.he_displaced_threshold_ft)))
         }
+      }
     }
 
     // Add airports into collection
     def insertAirportsCollection(collection: MongoCollection, file: String): Unit = {
-      if (collection.count() == 0)
+      if (collection.count() == 0) {
+        println("Insert Airports collection...")
         parser_airports.parseLinesAirports(parser_csv.fileToList(file)).drop(1).foreach { airport =>
           collection.insert(MongoDBObject(
             "id" -> check_collection.exists(airport.id),
@@ -70,6 +75,7 @@ package collection
             "wikipedia_link" -> check_collection.exists(airport.wikipedia_link),
             "keywords" -> check_collection.exists(airport.keywords)))
         }
+      }
     }
   }
   object check_collection {

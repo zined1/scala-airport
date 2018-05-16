@@ -8,8 +8,8 @@ package airport_function
     /* Airport and number of their runways */
     def displayAirportsRunways(airportCollection: MongoCollection, runwaysCollection: MongoCollection, countryCode: AnyRef): Unit = {
       val interestingAirports = airportCollection.find(MongoDBObject("iso_country" -> countryCode))
-      interestingAirports.foreach{airport => print(airport("name") + " ")
-        println(runwaysCollection.find(MongoDBObject("airport_ref" -> airport("id"))).size)}
+      interestingAirports.foreach{airport => print(airport("name") + " => ")
+        println(runwaysCollection.find(MongoDBObject("airport_ref" -> airport("id"))).size + " runway(s)")}
     }
   }
 
@@ -20,11 +20,15 @@ package airport_function
       val tenFirstCountries = airportsCollection.aggregate(
         List(
           MongoDBObject("$group" -> MongoDBObject("_id" -> "$iso_country", "numbers" -> MongoDBObject{"$sum" -> 1})),
-          MongoDBObject("$sort" -> MongoDBObject("numbers" -> -1)),
-          MongoDBObject("$limit" -> 10)),
+          MongoDBObject("$sort" -> MongoDBObject("numbers" -> -1))),
         aggregationOptions)
-      tenFirstCountries.foreach{country => println(parser_anyref.giveCountryWithCode(country("_id"), countriesCollection) +
-        " (" + country("_id") + ") => " + country("numbers"))}
+      println("HIGHEST :")
+      tenFirstCountries.take(10).foreach{country => println("    " + parser_anyref.giveCountryWithCode(country("_id"), countriesCollection) +
+        " (" + country("_id") + ") => " + country("numbers") + " airports")}
+
+      println("LOWEST :")
+      tenFirstCountries.toList.takeRight(10).foreach{country => println("    " + parser_anyref.giveCountryWithCode(country("_id"), countriesCollection) +
+        " (" + country("_id") + ") => " + country("numbers") + " airport")}
     }
 
     /* Type of runways per country */
@@ -42,6 +46,7 @@ package airport_function
       typeRunways.foreach{runway => println(parser_anyref.giveCountryWithCode(runway("_id"), countriesCollection) + " (" +
         runway("_id") + ") => " + parser_anyref.prettyPrintAnyRef(runway("surface")))}
     }
+
     /* 10 commons runways latitude */
     def commonRunways(runwaysCollection: MongoCollection): Unit = {
       val aggregationOptions = AggregationOptions(AggregationOptions.CURSOR)
@@ -51,7 +56,7 @@ package airport_function
           MongoDBObject("$sort" -> MongoDBObject("numbers" -> -1)),
           MongoDBObject("$limit" -> 10)),
         aggregationOptions)
-      commonRunways.foreach{runway => println(runway("_id") + " => " + runway("numbers"))}
+      commonRunways.foreach{runway => println(runway("_id") + " => " + runway("numbers") + " times")}
     }
   }
 }
