@@ -20,7 +20,7 @@ object main
   def query_menu(countriesCollection: MongoCollection, runwaysCollection: MongoCollection, airportsCollection: MongoCollection): Any = {
     println("Enter the country or coutry_code (e.g: France or FR)")
     print("-> ")
-    query_functions.displayAirportsRunways(airportsCollection, runwaysCollection, scala.io.StdIn.readLine())
+    query_functions.displayAirportsRunways(airportsCollection, countriesCollection, runwaysCollection, scala.io.StdIn.readLine())
     menu(countriesCollection, runwaysCollection, airportsCollection)
   }
 
