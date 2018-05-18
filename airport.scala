@@ -7,10 +7,13 @@ package airport_function
   object query_functions {
     /* Airport and number of their runways */
     def displayAirportsRunways(airportCollection: MongoCollection, countriesCollection : MongoCollection, runwaysCollection: MongoCollection, givenCode: AnyRef): Unit = {
-	  val countryCode = check_collection.getCodeWithCountryName(givenCode, countriesCollection)
+      val countryCode = check_collection.getCodeWithCountryName(givenCode, countriesCollection)
       val interestingAirports = airportCollection.find(MongoDBObject("iso_country" -> countryCode))
-      interestingAirports.foreach{airport => print(airport("name") + " => ")
-        println(runwaysCollection.find(MongoDBObject("airport_ref" -> airport("id"))).size + " runway(s)")}
+      if (interestingAirports.size != 0) {
+        interestingAirports.foreach{airport => print(airport("name") + " => ")
+          println(runwaysCollection.find(MongoDBObject("airport_ref" -> airport("id"))).size + " runway(s)")}
+      }
+      else println("No country found...")
     }
   }
 
