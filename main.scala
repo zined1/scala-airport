@@ -41,19 +41,18 @@ object main
   def main(args: Array[String]): Unit = {
     val mongoClient = MongoClient("localhost", 27017)("Airport")
     val countriesCollection = mongoClient("countries")
+    countriesCollection.createIndex("code")
     insert_collection.insertCountriesCollection(countriesCollection, "countries.csv")
+
+    val airportsCollection = mongoClient("airports")
+    airportsCollection.createIndex("id")
+    airportsCollection.createIndex("iso_country")
+    insert_collection.insertAirportsCollection(airportsCollection, "airports.csv")
 
     val runwaysCollection = mongoClient("runways")
     runwaysCollection.createIndex("airport_ref")
     insert_collection.insertRunwaysCollection(runwaysCollection, "runways.csv")
 
-    val airportsCollection = mongoClient("airports")
-    airportsCollection.createIndex("id")
-    insert_collection.insertAirportsCollection(airportsCollection, "airports.csv")
-
-    //val input = "France"
-    //val list = countriesCollection.find(MongoDBObject("name" -> input)).toList
-    //val countryCode = if (!list.isEmpty) list(0)("code") else (input)
     menu(countriesCollection, runwaysCollection, airportsCollection)
   }
 }

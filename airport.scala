@@ -6,34 +6,28 @@ package airport_function
 {
   object query_functions {
     /* Airport and number of their runways */
-    def displayAirportsRunways(airportCollection: MongoCollection, countriesCollection : MongoCollection, runwaysCollection: MongoCollection, givenCode: AnyRef): Unit = {
+    def displayAirportsRunways(airportsCollection: MongoCollection, countriesCollection : MongoCollection, runwaysCollection: MongoCollection, givenCode: AnyRef): Unit = {
       val countryCode = check_collection.getCodeWithCountryName(givenCode, countriesCollection)
-      val interestingAirports = airportCollection.find(MongoDBObject("iso_country" -> countryCode))
+      val interestingAirports = airportsCollection.find(MongoDBObject("iso_country" -> countryCode))
       if (interestingAirports.size != 0) {
-        interestingAirports.foreach{airport => print(airport("name") + " => ")
-          println(runwaysCollection.find(MongoDBObject("airport_ref" -> airport("id"))).size + " runway(s)")}
+        println(parser_anyref.giveCountryWithCode(countryCode, countriesCollection) + " ("+ countryCode +"):")
+        interestingAirports.foreach {
+          airport => print("     " + airport("name") + " ("+ airport("ident") + ") ")
+          val runways = runwaysCollection.find(MongoDBObject("airport_ref" -> airport("id"))).toList
+          val runwaysSize = runways.size
+          if (runwaysSize != 0) {
+            if (runwaysSize == 1) print("(1 runway) => ") else print(" (" + runwaysSize + " runways) => ")
+            runways.foreach{runway => print("[Surface: " + runway("surface") + ", Length(ft): " + runway("length_ft") + ", Width(ft): " + runway("width_ft") + "] | ")}
+          }
+          else print("(No runway)")
+          println("")
+        }
       }
       else println("No country found...")
     }
   }
 
-  /* Highest number of airports */
   object reports_functions {
-    def rankNumberAirports(airportsCollection: MongoCollection, countriesCollection: MongoCollection): Unit = {
-      val aggregationOptions = AggregationOptions(AggregationOptions.CURSOR)
-      val tenFirstCountries = airportsCollection.aggregate(
-        List(
-          MongoDBObject("$group" -> MongoDBObject("_id" -> "$iso_country", "numbers" -> MongoDBObject{"$sum" -> 1})),
-          MongoDBObject("$sort" -> MongoDBObject("numbers" -> -1))),
-        aggregationOptions)
-      println("HIGHEST :")
-      tenFirstCountries.take(10).foreach{country => println("    " + parser_anyref.giveCountryWithCode(country("_id"), countriesCollection) +
-        " (" + country("_id") + ") => " + country("numbers") + " airports")}
-
-      println("LOWEST :")
-      tenFirstCountries.toList.takeRight(10).foreach{country => println("    " + parser_anyref.giveCountryWithCode(country("_id"), countriesCollection) +
-        " (" + country("_id") + ") => " + country("numbers") + " airport")}
-    }
 
     /* Type of runways per country */
     def typeRunways(airportsCollection: MongoCollection, countriesCollection: MongoCollection): Unit = {
@@ -61,6 +55,19 @@ package airport_function
           MongoDBObject("$limit" -> 10)),
         aggregationOptions)
       commonRunways.foreach{runway => println(runway("_id") + " => " + runway("numbers") + " times")}
+    }
+
+    /* Highest number of airports */
+    def rankNumberAirports(airportsCollection: MongoCollection, countriesCollection: MongoCollection): Unit = {
+      val tenFirstCountries = countriesCollection.toList.map{countries => List(countries("code").toString, airportsCollection.find(MongoDBObject("iso_country" -> countries("code"))).size.toInt)}.
+        map{country => (country(0).toString, country(1).toString.toInt)}.sortBy(coountry => country._2)
+      println("HIGHEST :")
+      tenFirstCountries.takeRight(10).reverse.foreach{country => println("    " + parser_anyref.giveCountryWithCode(country._1, countriesCollection) +
+        " (" + country._1 + ") => " + country._2 + " airports")}
+
+      println("LOWEST :")
+      tenFirstCountries.take(10).foreach{country => println("    " + parser_anyref.giveCountryWithCode(country._1, countriesCollection) +
+        " (" + country._1 + ") => " + country._2 + " airport")}
     }
   }
 }
