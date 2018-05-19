@@ -9,11 +9,14 @@ object main
     println("----")
     println("1- Query")
     println("2- Reports")
+    println("3- Exit")
     print("-> ")
     scala.io.StdIn.readLine() match {
       case "Query" | "1" => query_menu(countriesCollection, runwaysCollection, airportsCollection)
       case "Reports" | "2" => reports_menu(countriesCollection, runwaysCollection, airportsCollection)
+      case "Exit" | "3" => println("Exit...")
       case _ => println("Unknown Option")
+      menu(countriesCollection, runwaysCollection, airportsCollection)
     }
   }
 
