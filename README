@@ -6,7 +6,7 @@
 \____/ \___\__,_|_|\__,_|  \____/___/ \_/   \_|  \__,_|_|  |___/\___|_|
 
 
-Scala CSVParser is a program written in Scala which enable to parse 3 csv files in order to
+Scala CSVParser is a program written in Scala which aims to parse 3 csv files in order to
 extract informations from theses files and do some statistics.
 
 ### INFORMATIONS ABOUT CSV FILES
@@ -24,24 +24,24 @@ extract informations from theses files and do some statistics.
 
 ### HOW TO USE
  DISCLAIMER : It is important to note that the FIRST LAUNCH of the program IS "SLOW"
-              because all information about the CSV will be add in the database.
+              because all information about the CSV will be added in the database.
 
  Now you have a menu with 3 options (Query, Report and Exit).
  The input can be String or Int. That is to say you can type either Query/Report/Exit or 1/2/3.
 
  (1) Query : You must enter a Country_code/Country/Beginning of the Country name (e.g: FR/France/Fran is the same).
-             The program give you all the airports in the country and their runways (Number, Surface, Width).
+             The program gives you all the airports in the country and their runways (Number, Surface, Width).
 
  (2) Report :
-     (1) Highest/Lowest number of airports : Give the 10 first countries with the highest/lowest
+     (1) Highest/Lowest number of airports : Gives the 10 first countries with the highest/lowest
       number of airports.
-     (2) Type of runways : Show all the countries with all types of their runways.
-     (3) 10 most common runway latitude : Give the 10 most commons runways latitude.
+     (2) Type of runways : Shows all the countries with all types of their runways.
+     (3) 10 most common runway latitude : Gives the 10 most commons runways latitude.
 
- (3) Exit: Exit the program.
+ (3) Exit: Exits the program.
 
 ### TEST
- Tests was created in order to test the program. You can type "sbt test" in order to launch them.
+ Tests were created in order to test the program. You can type "sbt test" in order to launch them.
  Some tests are "slow" (1s) because there are insertions in database.
 
 ### BONUS
