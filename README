@@ -23,8 +23,8 @@ extract informations from theses files and do some statistics.
  4) Finally, type "sbt run" and the program should be open.
 
 ### HOW TO USE
- DISCLAIMER : It is important to note that the FIRST LAUNCH of the program IS "SLOW"
-              because all information about the CSV will be added in the database.
+ DISCLAIMER : It is important to note that the INITIALIZATION will be "slow" the first time you launch our program.
+			  It is due to database creation and insertions.
 
  Now you have a menu with 3 options (Query, Report and Exit).
  The input can be String or Int. That is to say you can type either Query/Report/Exit or 1/2/3.
