@@ -18,7 +18,7 @@ extract informations from theses files and do some statistics.
  1) You must have :
   - Sbt which is a simple build tool for scala.
   - MongoDB which is a document database.
- 2) You must open Mongo, for this, type "mongod". Now your "server" is open.
+ 2) Open a terminal and open Mongo, for this, type "mongod". Now your "server" is open.
  3) Now type "sbt compile" in the same directory as this README.
  4) Finally, type "sbt run" and the program should be open.
 
