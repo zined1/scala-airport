@@ -17,7 +17,9 @@ package airport_function
           val runwaysSize = runways.size
           if (runwaysSize != 0) {
             if (runwaysSize == 1) print("(1 runway) => ") else print(" (" + runwaysSize + " runways) => ")
-            runways.foreach{runway => print("[Surface: " + runway("surface") + ", Length(ft): " + runway("length_ft") + ", Width(ft): " + runway("width_ft") + "] | ")}
+            runways.foreach{runway =>
+              print("[Surface: " + runway("surface") + ", Length(ft): " +
+                runway("length_ft") + ", Width(ft): " + runway("width_ft") + "] | ")}
           }
           else print("(No runway)")
           println("")
@@ -41,7 +43,8 @@ package airport_function
             "surface" -> MongoDBObject("$addToSet" -> "$runways.surface"))),
           MongoDBObject("$sort" -> MongoDBObject("_id" -> 1))),
         aggregationOptions).toList
-      typeRunways.foreach{runway => println(parser_anyref.giveCountryWithCode(runway("_id"), countriesCollection) + " (" +
+      typeRunways.foreach{runway =>
+        println(parser_anyref.giveCountryWithCode(runway("_id"), countriesCollection) + " (" +
         runway("_id") + ") => " + parser_anyref.prettyPrintAnyRef(runway("surface")))}
     }
 
@@ -59,15 +62,18 @@ package airport_function
 
     /* Highest number of airports */
     def rankNumberAirports(airportsCollection: MongoCollection, countriesCollection: MongoCollection): Unit = {
-      val tenFirstCountries = countriesCollection.toList.map{countries => List(countries("code").toString, airportsCollection.find(MongoDBObject("iso_country" -> countries("code"))).size.toInt)}.
+      val tenFirstCountries = countriesCollection.toList.map{countries =>
+        List(countries("code").toString, airportsCollection.find(MongoDBObject("iso_country" -> countries("code"))).size.toInt)}.
         map{country => (country(0).toString, country(1).toString.toInt)}.sortBy(country => country._2)
       println("HIGHEST :")
-      tenFirstCountries.takeRight(10).reverse.foreach{country => println("    " + parser_anyref.giveCountryWithCode(country._1, countriesCollection) +
-        " (" + country._1 + ") => " + country._2 + " airports")}
+      tenFirstCountries.takeRight(10).reverse.foreach{country =>
+        println("    " + parser_anyref.giveCountryWithCode(country._1, countriesCollection) +
+          " (" + country._1 + ") => " + country._2 + " airports")}
 
       println("LOWEST :")
-      tenFirstCountries.take(10).foreach{country => println("    " + parser_anyref.giveCountryWithCode(country._1, countriesCollection) +
-        " (" + country._1 + ") => " + country._2 + " airport")}
+      tenFirstCountries.take(10).foreach{country =>
+        println("    " + parser_anyref.giveCountryWithCode(country._1, countriesCollection) +
+          " (" + country._1 + ") => " + country._2 + " airport")}
     }
   }
 }

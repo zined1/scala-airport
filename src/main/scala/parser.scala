@@ -50,6 +50,7 @@ package parser
     // Transform the Anyref sent by Casbah in order to have a PrettyPrint
     def prettyPrintAnyRef(s: AnyRef): String = s.toString.replace(" , ", " | ").dropRight(1).drop(2)
     // Give the country with the code (e.g. FR => France)
-    def giveCountryWithCode(code: AnyRef, collection: MongoCollection): String = collection.find(MongoDBObject("code" -> code)).toList(0)("name").toString
+    def giveCountryWithCode(code: AnyRef, collection: MongoCollection): String =
+      collection.find(MongoDBObject("code" -> code)).toList(0)("name").toString
   }
 }

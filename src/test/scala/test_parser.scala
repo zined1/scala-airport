@@ -47,14 +47,18 @@ class TestParserCountries extends FunSuite with Matchers {
 
 class TestParserAirports extends FunSuite with Matchers {
   test("StringToAirports with N/A elements in the middle") {
-    val data = parser_airports.stringToAirports(List("29929","LFPR","closed","Guyancourt Airport","48.76029968261719","2.0625","541","EU","FR","FR-J","Guyancourt","no","LFPR","N/A","N/A","N/A","http://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Guyancourt","N/A"))
-    data should be (parser_airports.Airports("29929","LFPR","closed","Guyancourt Airport","48.76029968261719","2.0625","541","EU","FR","FR-J","Guyancourt","no","LFPR","N/A","N/A","N/A","http://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Guyancourt","N/A"))
+    val data = parser_airports.stringToAirports(List("29929","LFPR","closed","Guyancourt Airport","48.76029968261719",
+      "2.0625","541","EU","FR","FR-J","Guyancourt","no","LFPR","N/A","N/A","N/A","http://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Guyancourt","N/A"))
+    data should be (parser_airports.Airports("29929","LFPR","closed","Guyancourt Airport","48.76029968261719","2.0625",
+      "541","EU","FR","FR-J","Guyancourt","no","LFPR","N/A","N/A","N/A","http://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Guyancourt","N/A"))
   }
 }
 
 class TestParserRunways extends FunSuite with Matchers {
   test("StringToRunways with N/A elements in the middle") {
-    val data = parser_runways.stringToRunways(List("257922","16935","CO82","1200","20","CONC","0","0","08","N/A","N/A","N/A","N/A","N/A","26","N/A","N/A","N/A","N/A","N/A"))
-    data should be (parser_runways.Runways("257922","16935","CO82","1200","20","CONC","0","0","08","N/A","N/A","N/A","N/A","N/A","26","N/A","N/A","N/A","N/A","N/A"))
+    val data = parser_runways.stringToRunways(List("257922","16935","CO82","1200","20","CONC","0","0","08","N/A","N/A",
+      "N/A","N/A","N/A","26","N/A","N/A","N/A","N/A","N/A"))
+    data should be (parser_runways.Runways("257922","16935","CO82","1200","20","CONC","0","0","08","N/A","N/A","N/A",
+      "N/A","N/A","26","N/A","N/A","N/A","N/A","N/A"))
   }
 }

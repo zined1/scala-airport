@@ -83,7 +83,8 @@ package collection
     def exists(element: String) = if (element == "N/A") None else element.replaceAll("\"","")
     // Searches for country code if a country name was given
     def getCodeWithCountryName(code : AnyRef, collection : MongoCollection) = {
-      val list = collection.filter{ country => country("name").toString.toLowerCase.startsWith(code.toString.toLowerCase)}.toList
+      val list = collection.filter{ country => country("name").
+        toString.toLowerCase.startsWith(code.toString.toLowerCase)}.toList
       if (!list.isEmpty) list(0)("code") else (code)
     }
   }
