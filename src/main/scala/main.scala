@@ -42,19 +42,20 @@ object main
   }
 
   def main(args: Array[String]): Unit = {
+    val path = "./src/main/ressources/"
     val mongoClient = MongoClient("localhost", 27017)("Airport")
     val countriesCollection = mongoClient("countries")
     countriesCollection.createIndex("code")
-    insert_collection.insertCountriesCollection(countriesCollection, "countries.csv")
+    insert_collection.insertCountriesCollection(countriesCollection, path + "countries.csv")
 
     val airportsCollection = mongoClient("airports")
     airportsCollection.createIndex("id")
     airportsCollection.createIndex("iso_country")
-    insert_collection.insertAirportsCollection(airportsCollection, "airports.csv")
+    insert_collection.insertAirportsCollection(airportsCollection, path + "airports.csv")
 
     val runwaysCollection = mongoClient("runways")
     runwaysCollection.createIndex("airport_ref")
-    insert_collection.insertRunwaysCollection(runwaysCollection, "runways.csv")
+    insert_collection.insertRunwaysCollection(runwaysCollection, path + "runways.csv")
 
     menu(countriesCollection, runwaysCollection, airportsCollection)
   }
