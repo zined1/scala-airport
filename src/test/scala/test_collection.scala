@@ -7,7 +7,7 @@ class TestInsertCollectionCountries extends FunSuite with Matchers {
     val mongoClient = MongoClient("localhost", 27017)("Airport")
     val countriesCollection = mongoClient("countries")
     countriesCollection.drop()
-    insert_collection.insertCountriesCollection(countriesCollection, "./countries.csv")
+    insert_collection.insertCountriesCollection(countriesCollection, "./src/main/ressources/countries.csv")
     countriesCollection.size should equal (247)
   }
   test("Check if Countries is good")
@@ -24,7 +24,7 @@ class TestInsertCollectionAirports extends FunSuite with Matchers {
     val mongoClient = MongoClient("localhost", 27017)("Airport")
     val airportsCollection = mongoClient("airports")
     airportsCollection.drop()
-    insert_collection.insertAirportsCollection(airportsCollection, "./airports.csv")
+    insert_collection.insertAirportsCollection(airportsCollection, "./src/main/ressources/airports.csv")
     airportsCollection.size should equal (46505)
   }
   test("Check if Airports collection is good")
@@ -48,7 +48,7 @@ class TestInsertCollectionRunways extends FunSuite with Matchers {
     val mongoClient = MongoClient("localhost", 27017)("Airport")
     val runwaysCollection = mongoClient("runways")
     runwaysCollection.drop()
-    insert_collection.insertRunwaysCollection(runwaysCollection, "./runways.csv")
+    insert_collection.insertRunwaysCollection(runwaysCollection, "./src/main/ressources/runways.csv")
     runwaysCollection.size should equal (39536)
   }
   test("Check if Runways with empty elements collection is good")
